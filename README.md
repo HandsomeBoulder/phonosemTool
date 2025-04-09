@@ -1,5 +1,3 @@
-phonosemTool
-
 This is a web-application that helps translators to choose only phonosematically expressive Russian translations of English verbs of movement.
 
 Please install node.js, python and optionally git on your machine beforehand.
