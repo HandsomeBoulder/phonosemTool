@@ -15,6 +15,7 @@ Configuring backend:
 4. Install requirements "pip install requirements.txt";
 5. Launch API "python api.py";
 6. The backend is now running!
+
 N.B. Do not close the PowerShell window! This is not a .service build!
 
 Configuiring frontend:
@@ -23,6 +24,7 @@ Configuiring frontend:
 3. Install dependencies "npm install";
 4. Launch Quasar "quasar dev";
 5. You will now be redirected to the Index page of the application. If you are not redirected, go to "http://localhost:9000/#/".
+
 N.B. Do not close the PowerShell window! This is not a .service build!
 
 The application is fully ready for your input now. Type a verb, a list of verbs or a sentence and test it.
