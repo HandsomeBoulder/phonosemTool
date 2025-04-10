@@ -25,16 +25,6 @@ def phonosemTool(request: str) -> list:
         }]
         return data
 
-    # Обрабатываем входящий запрос
-    # while True:
-    #     request = input('Input a verb or a sentence: ').strip()
-    #     if not request:
-    #         print('Empty input')
-    #     elif request.isnumeric():
-    #         print('Input cannot be a number')
-    #     else:
-    #         break
-
     # NLQ сегмент spaCy
     nlp = spacy.load("en_core_web_trf")  # тяжеловесная CPU модель для английского языка
     tokens, verbs, results, verb_flag = nlp(request), [], [], False
@@ -145,7 +135,7 @@ def phonosemTool(request: str) -> list:
                         transitivityRu = ''
             # Обработка русской транскрипции регулряным выражением, отсечение суффиксов инфинитива
             transcription = transcription.replace('’', '')
-            pattern = r"(at|et|it|ыvat|ivat|avat|nut|aca|eca|ica|ыvaca|ivaca|avaca|nuca|ti|ca|t)$"
+            pattern = r"(at|et|it|ыt|ыvat|ivat|avat|nut|aca|eca|ica|ыvaca|ivaca|avaca|nuca|ti|ca|t)$"
             transcription = re.sub(pattern, '', transcription)
             # Вырезаем элементы в круглых скобках
             # transcription = re.sub(r'\(.*\)', '', translation).strip()
@@ -207,7 +197,6 @@ def phonosemTool(request: str) -> list:
                             best_score, best_blueprint = int(score), blueprint
                         
             # Запись результата
-            # sorted_verbs.append((translation, transcription, best_score, transitivityRu))
             translations.append(translation)
             scores.append(best_score)
             transitivities.append(transitivityRu)
@@ -216,8 +205,6 @@ def phonosemTool(request: str) -> list:
         sorted_combined = sorted(combined, key=lambda x: x[1], reverse=True)
         sorted_translations, sorted_scores, sorted_transitivities = zip(*sorted_combined)
         sorted_translations, sorted_scores, sorted_transitivities = list(sorted_translations), list(sorted_scores), list(sorted_transitivities)
-        # sorted_verbs = sorted(sorted_verbs, key=lambda x: x[2], reverse=True)
-        # print(*sorted_verbs, sep='\n', end='\n----------------------------\n')
         data = {
             "verb" : verb,
             "category" : cat_info,
@@ -231,5 +218,3 @@ def phonosemTool(request: str) -> list:
         total_verb_info.append(data)
 
     return total_verb_info
-
-print(phonosemTool('to canter'))
