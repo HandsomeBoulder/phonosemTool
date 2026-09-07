@@ -69,7 +69,7 @@ def main() -> None:
     conn.commit()
 
     # Читаем csv таблицу
-    df = pd.read_csv(excel_table)
+    df = pd.read_csv(excel_table, delimiter=';')
     # Опускаем все пустые строки
     df.dropna(inplace = True)
     # Производим операции над каждой строкой csv таблицы

@@ -1,7 +1,13 @@
+# 
+.venv/
+*.jsonl
+*.log
+*.db
+__pycache__/
+
 # frontend
 /frontend/node_modules/
 
 #backend
-/backend/.venv
 /backend/__pycache__
 /backend/customFunctions/__pycache__

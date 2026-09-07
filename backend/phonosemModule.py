@@ -31,6 +31,7 @@ def phonosemTool(request: str) -> list:
     # Находим глаголы
     for token in tokens:
         # Лемматизируем
+        # print(token, token.pos_)
         if token.pos_ == 'VERB':
             verb_flag = True
             verbs.append(token.lemma_)
@@ -138,7 +139,7 @@ def phonosemTool(request: str) -> list:
             pattern = r"(at|et|it|ыt|ыvat|ivat|avat|nut|aca|eca|ica|ыvaca|ivaca|avaca|nuca|ti|ca|t)$"
             transcription = re.sub(pattern, '', transcription)
             # Вырезаем элементы в круглых скобках
-            # transcription = re.sub(r'\(.*\)', '', translation).strip()
+            # transcription = re.sub(r'\(.*\)', '', translation).strip() устаревший код
             print('NB', transcription)
             best_score = 0
             # Обработка нефоносемантических глаголов движения
@@ -168,6 +169,8 @@ def phonosemTool(request: str) -> list:
                     for blueprint in template['blueprint']:
                         # Считаем расстояние по отношению к каждому шаблону
                         score = fuzz.partial_ratio(blueprint, combination)  # Частичное сравнение по первому вхождению
+                        print(translation)  # debug
+                        print('до', blueprint, score)  # debug
                         # Проверяем, включает ли набор наиболее важные фонотипы
                         if template['essentials']:
                             essential_flag = False
@@ -193,6 +196,7 @@ def phonosemTool(request: str) -> list:
                                     # Стандартный штраф
                                     score *= penalty
                         # Находим наиболее высокий счет
+                        print('конец', blueprint, score)  # debug
                         if score > best_score:
                             best_score, best_blueprint = int(score), blueprint
                         
@@ -218,3 +222,30 @@ def phonosemTool(request: str) -> list:
         total_verb_info.append(data)
 
     return total_verb_info
+
+[
+    'session1' : [
+        'record1' : [
+            {word},
+            {word},
+            {word},
+        ]
+        'record2' : [
+            {word}
+            {word},
+            {word},
+        ]
+    ]
+    'session2' : [
+        'record1' : [
+            {word},
+            {word},
+            {word},
+        ]
+        'record2' : [
+            {word}
+            {word},
+            {word},
+        ]
+    ]
+]

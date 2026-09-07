@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
-    <div class="column flex-center full-width" style="max-width: 700px">
-      <q-list class="full-width">
+    <div class="column flex-center full-width" style="max-width: 900px">
+      <!-- <q-list class="full-width">
           <q-item>
             <q-item-section>
               <q-item-label>1. Введите запрос</q-item-label>
@@ -22,78 +22,58 @@
               <q-item-label caption lines="2">Карточки содержат списки переводов, ранжированных по фоносемантическому рейтингу. Чем выше балл, тем лучше перевод выполняет звукоизобразительную функцию оригинала</q-item-label>
             </q-item-section>
           </q-item>
-      </q-list>
+      </q-list> -->
       <!-- Submit -->
-      <div class="full-width">
-        <SubmitVerb @responseAPI="updateItems"></SubmitVerb>
-      </div>
-      <!-- Response -->
-      <div class="q-pa-md full-width">
-        <!-- оригинал + значение -->
-        <q-card class="q-mb-md" v-for="(item, index) in items" :key="index" flat bordered>
-          <q-card-section class="bg-green-2">
-            <div class="text-h6">
-              <q-chip square color="primary" class="text-uppercase" text-color="white">{{ item.verb }}</q-chip>
-              <q-chip v-if="item.transcription" dense square outline color="primary" class="transcription" text-color="white">{{ item.transcription }}</q-chip>
-              <q-chip v-if="item.category" dense square outline color="primary" class="transitivity" text-color="white">{{ item.category }}</q-chip>
-              <q-chip v-if="item.transitivity" dense square outline color="primary" class="transitivity" text-color="white">{{ item.transitivity }}</q-chip>
-            </div>
-            <div class="text-subtitle2 text-primary">
-              {{ item.meaning }}
-            </div>
-          </q-card-section>
-          <!-- переводы -->
-          <q-markup-table separator="cell">
-            <thead class="bg-grey-2" v-if="item.translations">
-              <tr>
-                <th class="text-center text-grey-7">
-                  <span class="text-body2">Перевод</span>
-                </th>
-                <th v-if="item.category !== 'нет фоносемантического значения'" class="text-center text-grey-7">
-                  <span class="text-body2">Балл</span>
-                </th>
-                <th v-if="item.transitivity" class="text-center text-grey-7">
-                  <span class="text-body2">Переходность</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody v-if="item.translations">
-              <tr v-for="(translation, idx) in item.translations" :key="idx">
-                <td class="text-left">{{ translation }}</td>
-                <td v-if="item.category !== 'нет фоносемантического значения'" class="text-left">{{ item.scores[idx] }}</td>
-                <td 
-                  v-if="item.transitivity" 
-                  class="text-left" 
-                  :class="item.transitivities[idx] !== item.transitivity ? 'text-negative' : 'text-positive'"
-                >
-                  <span v-if="item.transitivities[idx]">{{ item.transitivities[idx] }}</span>
-                  <span v-else>N/A</span>
-                  <q-icon
-                    :name="item.transitivities[idx] === item.transitivity ? 'check' : 'close'"
-                    :color="item.transitivities[idx] === item.transitivity ? 'positive' : 'negative'"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </q-markup-table>
-        </q-card>
-      </div>
+      <!-- <div class="full-width"> -->
+      <!-- </div> -->
+
+      <!-- Filters -->
+      <OnomatopoeicOptions
+        @submit="onSubmit"
+        class="full-width"
+        :loading="loading"
+      />
+      <!-- Table -->
+      <OnomotopoeicTranslations :lexicalUnit="lexicalUnit" />
+      
     </div>
   </q-page>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import SubmitVerb from 'src/components/SubmitVerb.vue'
+<script setup lang="ts">
+import { ref } from 'vue';
+import { apiPost } from '@/api';
+import type { OnomatopoeicTranslatePayload, LexicalUnit } from '@/components/types';
+import OnomatopoeicOptions from '@/components/OnomatopoeicOptions.vue';
+import OnomotopoeicTranslations from '@/components/OnomotopoeicTranslations.vue';
 
-const items = ref([])
+const loading = ref(false);
+const lexicalUnit = ref<LexicalUnit>({
+  lemma: '',
+  pos: '',
+  onomatop_type: undefined,
+  senses: [],
+});
 
-const updateItems = (newItems) => {
-  items.value = newItems
-}
+/**
+ * Send request to find translations.
+ * @param payload 
+ */
+const onSubmit = async (payload: OnomatopoeicTranslatePayload) => {
+  loading.value = true;
+  try {
+    const response = await apiPost<LexicalUnit>('/onomatopoeic/translate', payload);
+    lexicalUnit.value = response;
+    console.log(response);
+  } catch (error) {
+    console.error("Ошибка при запросе:", error);
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
-<style>
+<style style scoped lang="scss">
 .capitalize {
   text-transform: capitalize;
 }
@@ -113,5 +93,3 @@ const updateItems = (newItems) => {
   /* font-style: italic; */
 }
 </style>
-
-<!-- дописать отсутсвие переходности и ошибки ввода -->
