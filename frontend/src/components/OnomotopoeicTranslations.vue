@@ -74,19 +74,19 @@
             <q-tr v-show="props.expand" :props="props" no-hover class="bg-grey-3">
                 <q-td colspan="100%" class="expand-row">
                     <TranslationCard
-                        :examples="props.row.examples"
-                        :phonotypes="props.row.phonotypes"
-                        :model="props.row.model"
+                        :examples="props.row.examples ?? []"
+                        :phonotypes="props.row.phonotypes ?? []"
+                        :model="props.row.model ?? []"
                     />
                 </q-td>
             </q-tr>
         </Transition>
-        
+
       </template>
 </q-table>
 
 </template>
-  
+
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import type { QTableColumn } from 'quasar';
@@ -100,7 +100,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {});
 
 const expanded = ref<string[]>([]);
-const pagination = ref({ rowsPerPage: 0 });
+const pagination = ref({ sortBy: 'score', descending: true, rowsPerPage: 0 });
 
 // Make a flat list of translation with their examples
 const rows = computed<TranslationRow[]>(
@@ -117,6 +117,7 @@ const getRowKey = (row: TranslationRow) => row.words.map(word => word.spelling).
 const getRowTranscription = (row: TranslationRow) => row.words.map(word => word.transcription).join("").replace(/\/\//g, " ");
 const getRowScore = (row: TranslationRow) => (row.score ?? 0) * 100;
 const getRowPhonotypes = (row: TranslationRow) => row.phonotypes ?? [];
+// const getRowModel = (row: TranslationRow) => row.model ?? [];
 
 const rowColor = (expanded: boolean) => {
     return expanded ? 'bg-grey-3' : '';
@@ -155,7 +156,7 @@ const columns: QTableColumn[] = [
 
 /**
  * Get Quasar palette color for score widget.
- * @param score 
+ * @param score
  */
 function scoreColor(score: number) {
     if (score > 66) return 'green';

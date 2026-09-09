@@ -24,7 +24,7 @@
 </q-card>
 
 </template>
-  
+
 <script setup lang="ts">
 import PhonotypeGroup from './PhonotypeGroup.vue';
 import type { Example } from './types';
@@ -45,10 +45,10 @@ withDefaults(defineProps<Props>(), {});
     flex-direction: column;
     gap: 15px;
 }
-// .my-card {
-//     width: 100%;
-//     max-width: 900px;
-// }
+.my-card {
+    width: 100%;
+    max-width: 900px;
+}
 .example {
     white-space: normal;
 }
